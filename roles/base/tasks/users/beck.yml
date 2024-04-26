@@ -1,0 +1,8 @@
+- name: users | beck | add public key
+  tags: dotfiles,ssh,ssh-keys,users
+  authorized_key:
+    user: beck
+    key: "{{ item }}"
+    exclusive: true
+  with_file:
+    - users/beck/ssh/beck_id_rsa.pub

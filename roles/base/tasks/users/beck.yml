@@ -1,7 +1,7 @@
 - name: users | beck | add public key
   tags: dotfiles,ssh,ssh-keys,users
   authorized_key:
-    user: root
+    user: beck
     key: "{{ lookup('file', 'users/beck/ssh/authorized_keys') }}"
     state: present
     exclusive: true

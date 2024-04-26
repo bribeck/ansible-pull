@@ -1,8 +1,8 @@
 - name: users | beck | add public key
   tags: dotfiles,ssh,ssh-keys,users
   authorized_key:
-    user: beck
-    key: "{{ item }}"
+    user: root
+    key: "{{ lookup('file', 'users/beck/ssh/authorized_keys') }}"
+    state: present
     exclusive: true
-  with_file:
-    - users/beck/ssh/beck_id_rsa.pub
+  

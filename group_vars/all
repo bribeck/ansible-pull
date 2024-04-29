@@ -1,5 +1,6 @@
 ansible_cron_minute: "*"
-branch: main
+ansible_schedule: false
+branch: dtlab4
 
 
 

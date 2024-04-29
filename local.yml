@@ -6,8 +6,8 @@
 
   tasks: 
     - include_role:                                                                                                   
-      #name: dt.nrc.kernel
-      tasks_from: grub_kernel/main.yml
+      #name: grub_kernel
+      tasks_from: main.yml
 
     - name: Display facts
       set_fact:

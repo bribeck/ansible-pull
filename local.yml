@@ -7,11 +7,15 @@
   pre_tasks:
     - name: Gather Facts
       setup:
+    
     - name: Check for previous output.json file
       stat:
         path: /srv/output.json
-      register:   
-
+      register: pre_output
+    
+    - set_fact:
+        check_sum: "{{ pre_output.stat.checksum | default(false)}}"
+        
   roles:
     - base
    
@@ -38,17 +42,24 @@
         content: "{{ combined_output }}"
       become: no
 
+    - name: Check new checksum
+      stat:
+        path: /srv/output.json
+      register: cur_check_sum  
 
-    #- name: EMAIL BACKUPS
-    #  community.general.mail:
-    #    host: smtp.nrc.ca
-    #    port: 25
-    #    subject: Ansible-report
-    #    body: Hello, this is an e-mail. I hope you like it ;-)
-    #    from: ansiblenrc@ssc-spc.gc.ca (Brian Beckwith)
-    #    to:
-    #      - brian.beckwith@ssc-spc.gc.ca
-    #    attach:
-    #      - /srv/output.json
-    #  become: no
+
+    - name: EMAIL BACKUPS
+      community.general.mail:
+        host: smtp.nrc.ca
+        port: 25
+        subject: Ansible-report
+        body: Hello, this is an e-mail. I hope you like it ;-)
+        from: ansiblenrc@ssc-spc.gc.ca (Brian Beckwith)
+        to:
+          - brian.beckwith@ssc-spc.gc.ca
+        attach:
+          - /srv/output.json
+      become: no
+      when: check_sum != cur_check-sum.stat.checksum 
+        
 

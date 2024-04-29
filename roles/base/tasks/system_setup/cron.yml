@@ -23,4 +23,4 @@
     name: "ansible refresh at boot"
     user: ansible
     special_time: reboot
-    job: "/usr/local/bin/check_kernel"
+    job: "/usr/local/bin/provision"

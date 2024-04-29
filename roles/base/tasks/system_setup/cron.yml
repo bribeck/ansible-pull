@@ -1,4 +1,4 @@
-k - name: ansible setup | generate provision script from template
+- name: ansible setup | generate provision script from template
   tags: ansible,ansible-setup,scripts
   template:
     src: provision.sh.j2

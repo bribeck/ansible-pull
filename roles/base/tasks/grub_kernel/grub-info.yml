@@ -62,16 +62,25 @@
       shell: |
          grubby --info=ALL | awk '/index/ {getline; print substr( $0, 1, length($0)-1 )}' | awk -F'/' '{print $3}'
       register: grub_table_boot
-                                                                                                                                                                                                                                                - debug:
-        msg: "{{ grub_table_boot }}"                                                                                                                                                                                                        
-    - set_fact:                                                                                                                                                                                                                                     grub_table: "{{grub_table_boot.stdout_lines}}"
-                                                                                                                                                                                                                                                - set_fact:
-        grub_version: "2"                                                                                                                                                                                                                   
-    - name: Get Grub default                                                                                                                                                                                                                      ignore_errors: yes
+
+    - debug:
+        msg: "{{ grub_table_boot }}"
+
+    - set_fact:
+        grub_table: "{{grub_table_boot.stdout_lines}}"
+
+    - set_fact:
+        grub_version: "2"
+
+    - name: Get Grub default
+      ignore_errors: yes
       shell: |
-        grubby --default-kernel | awk -F'/' '{print $3}'                                                                                                                                                                                          register: grub_def
-                                                                                                                                                                                                                                                - set_fact:
-        grub_default: "{{grub_def.stdout}}"                                                                                                                                                                                                 
+        grubby --default-kernel | awk -F'/' '{print $3}'
+      register: grub_def
+
+    - set_fact:
+        grub_default: "{{grub_def.stdout}}"
+
   when: grub_loader.stat.exists and boot_grub_file.stat.exists
 
 - block:                                                                                                                                                                                                                                    

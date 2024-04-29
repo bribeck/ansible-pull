@@ -30,7 +30,7 @@
         dest: "/tmp/output.json"
         content: "{{ combined_output }}"
      #delegate_to: localhost
-     become: no
+      become: no
      #run_once: yes
 
     - name: EMAIL BACKUPS

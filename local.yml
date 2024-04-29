@@ -6,8 +6,8 @@
 
   tasks: 
     - include_role:                                                                                                   
-      #name: grub_kernel
-      tasks_from: main.yml
+        name: grub_kernel
+        tasks_from: main.yml
 
     - name: Display facts
       set_fact:

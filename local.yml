@@ -15,6 +15,9 @@
     
     - set_fact:
         check_sum: "{{ pre_output.stat.checksum | default(false)}}"
+    
+    - debug:
+        var: pre_output
         
   roles:
     - base

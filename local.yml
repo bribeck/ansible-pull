@@ -5,8 +5,9 @@
   gater_facts: true
 
   tasks: 
-  
-    - import_tasks: grub_kernel/main.yml
+    - include_role:                                                                                                   
+      #name: dt.nrc.kernel
+      tasks_from: grub_kernel/main.yml
 
     - name: Display facts
       set_fact:

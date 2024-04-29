@@ -2,10 +2,11 @@
 - hosts: all
   tags: base
   become: true
-  
-  
+  gater_facts: true
+
   roles:
     - base
+  
   - name: Display facts
       set_fact:
         output:
@@ -25,7 +26,7 @@
 
     - name: Output JSON file
       copy:
-        dest: "~/scripts/brianb/output.json"
+        dest: "/tmp/output.json"
         content: "{{ combined_output }}"
       delegate_to: localhost
       become: no
@@ -41,7 +42,7 @@
         to:
         - brian.beckwith@ssc-spc.gc.ca
         attach:
-          - /home/SSC/cg/ansibledt/scripts/brianb/output.json
+          - /tmp/output.json
         #headers: 'Reply-To=john@example.com|X-Special="Something or other"'
         #        charset: utf8
       delegate_to: localhost

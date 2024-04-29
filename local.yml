@@ -9,8 +9,8 @@
     - name: Gather facts
       setup:
       
-    roles:
-      - base
+    - roles:
+        - base
 
     - name: Display facts
       set_fact:

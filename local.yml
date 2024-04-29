@@ -2,7 +2,7 @@
 - hosts: all
   tags: base
   become: true
-  gater_facts: true
+  #gater_facts: true
 
   tasks: 
     - include_role:                                                                                                   

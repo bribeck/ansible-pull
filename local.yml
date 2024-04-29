@@ -7,6 +7,10 @@
   pre_tasks:
     - name: Gather Facts
       setup:
+    - name: Check for previous output.json file
+      stat:
+        path: /srv/output.json
+      register:   
 
   roles:
     - base
@@ -30,21 +34,21 @@
       
     - name: Output JSON file
       copy:
-        dest: "/tmp/output.json"
+        dest: "/srv/output.json"
         content: "{{ combined_output }}"
       become: no
 
 
-    - name: EMAIL BACKUPS
-      community.general.mail:
-        host: smtp.nrc.ca
-        port: 25
-        subject: Ansible-report
-        body: Hello, this is an e-mail. I hope you like it ;-)
-        from: ansiblenrc@ssc-spc.gc.ca (Brian Beckwith)
-        to:
-          - brian.beckwith@ssc-spc.gc.ca
-        attach:
-          - /tmp/output.json
-      become: no
+    #- name: EMAIL BACKUPS
+    #  community.general.mail:
+    #    host: smtp.nrc.ca
+    #    port: 25
+    #    subject: Ansible-report
+    #    body: Hello, this is an e-mail. I hope you like it ;-)
+    #    from: ansiblenrc@ssc-spc.gc.ca (Brian Beckwith)
+    #    to:
+    #      - brian.beckwith@ssc-spc.gc.ca
+    #    attach:
+    #      - /srv/output.json
+    #  become: no
 

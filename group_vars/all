@@ -1,4 +1,4 @@
-ansible_cron_minute: "1"
+ansible_cron_minute: "*"
 branch: main
 
 

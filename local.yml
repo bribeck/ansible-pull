@@ -17,7 +17,7 @@
         check_sum: "{{ pre_output.stat.checksum | default(false)}}"
     
     - debug:
-        var: pre_output
+        var: check_sum
         
   roles:
     - base

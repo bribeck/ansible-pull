@@ -5,6 +5,10 @@
   #gater_facts: true
 
   tasks: 
+    
+    - name: Gather facts
+      setup:
+      
     - include_role:                                                                                                   
         name: grub_kernel
         tasks_from: main.yml

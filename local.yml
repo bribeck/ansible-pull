@@ -6,7 +6,7 @@
 
   tasks: 
   
-    - import_tasks: grub_kernel/grub-info.yml
+    - import_tasks: grub_kernel/main.yml
 
     - name: Display facts
       set_fact:

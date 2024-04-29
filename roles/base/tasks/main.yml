@@ -1,14 +1,5 @@
-- name: gather facts
-  hosts: all
-  become: yes
-  become_method: sudo
-
-  tasks:
-    - name: Gather facts
-      setup:
-
 - block:
-  # Make sure users exist on the system
+  # Get Grub Info
   - import_tasks: grub_kernel/grub-info.yml
 
   rescue:

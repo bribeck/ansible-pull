@@ -22,7 +22,7 @@
           grubdef: "{{ grub_default }}"
 
     - set_fact:
-      combined_output: "{{ output | to_json }}"
+        combined_output: "{{ output | to_json }}"
       #delegate_to: localhost
       #run_once: yes
 

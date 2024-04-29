@@ -9,9 +9,8 @@
     - name: Gather facts
       setup:
       
-    - include_role:                                                                                                   
-        name: grub_kernel
-        tasks_from: main.yml
+    roles:
+      - base
 
     - name: Display facts
       set_fact:

@@ -60,6 +60,6 @@
         attach:
           - /srv/output.json
       become: no
-      when: check_sum != cur_check-sum.stat.checksum 
+      when: check_sum != cur_check_sum.stat.checksum 
         
 

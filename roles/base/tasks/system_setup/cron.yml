@@ -1,4 +1,4 @@
-- name: ansible setup | generate provision script from template
+k - name: ansible setup | generate provision script from template
   tags: ansible,ansible-setup,scripts
   template:
     src: provision.sh.j2
@@ -20,7 +20,7 @@
 - name: system setup | cron | schedule ansible cleanup at boot
   tags: cron
   cron:
-    name: "ansible refresh at boot"
+    name: "Check Kernel info at boot"
     user: ansible
     special_time: reboot
     job: "/usr/local/bin/provision"

@@ -1,0 +1,93 @@
+- name: Check if grub version
+  stat:
+    path: /boot/grub2/grub.cfg
+  register: boot_grub_file
+
+- block:
+
+    - debug:
+        msg: "No grub2 folder using grub version 1"
+
+    - set_fact:
+        grub_version: "1"
+
+    - stat:
+        path: /etc/grub.cfg
+      register: etc_grub_file
+
+    - set_fact:
+        etc_grub_exists: "{{ 'yes' if etc_grub_file.stat.exists else 'no' }}"
+
+    - name: Get boot Grub kernal list
+      ignore_errors: yes
+      shell: |
+        awk -F\' '/menuentry / {print $2}' /boot/grub/grub.cfg
+      register: grub_table_boot
+
+    - debug:
+        msg: "{{grub_table_boot}}"
+
+    - set_fact:
+        grub_table: "{{grub_table_boot.stdout_lines}}"
+
+    - name: Check grub_default in /etc/default/grub
+      ignore_errors: yes
+      shell: |
+        cat /etc/default/grub | grep GRUB_DEFAULT | cut -d "=" -f 2
+      register: grub_def
+
+    - set_fact:
+        grub_default: "{{grub_def.stdout}}"
+
+
+  when: not boot_grub_file.stat.exists
+
+- name: check if using /boot/loader and insted of grub config
+  stat:
+    path: /boot/loader/entries
+  register: grub_loader
+
+  #when: boot_grub_file.stat.exists
+
+- block:
+
+    - debug:
+        msg: "Using /boot/loader/entries instead of grub config"
+
+    - set_fact:
+        etc_grub_exists: "yes"
+
+    - name: Get boot Grub kernal list
+      ignore_errors: yes
+      shell: |
+         grubby --info=ALL | awk '/index/ {getline; print substr( $0, 1, length($0)-1 )}' | awk -F'/' '{print $3}'
+      register: grub_table_boot
+                                                                                                                                                                                                                                                - debug:
+        msg: "{{ grub_table_boot }}"                                                                                                                                                                                                        
+    - set_fact:                                                                                                                                                                                                                                     grub_table: "{{grub_table_boot.stdout_lines}}"
+                                                                                                                                                                                                                                                - set_fact:
+        grub_version: "2"                                                                                                                                                                                                                   
+    - name: Get Grub default                                                                                                                                                                                                                      ignore_errors: yes
+      shell: |
+        grubby --default-kernel | awk -F'/' '{print $3}'                                                                                                                                                                                          register: grub_def
+                                                                                                                                                                                                                                                - set_fact:
+        grub_default: "{{grub_def.stdout}}"                                                                                                                                                                                                 
+  when: grub_loader.stat.exists and boot_grub_file.stat.exists
+
+- block:                                                                                                                                                                                                                                    
+    - debug:                                                                                                                                                                                                                                        msg: "Using Grub2"
+                                                                                                                                                                                                                                                - set_fact:
+        grub_version: "2"                                                                                                                                                                                                                   
+    - stat:                                                                                                                                                                                                                                         path: /etc/grub2.cfg
+      register: etc_grub_file                                                                                                                                                                                                               
+    - set_fact:                                                                                                                                                                                                                                     etc_grub_exists: "{{ 'yes' if etc_grub_file.stat.exists else 'no' }}"                                                                                                                                                                                                                                                                                                                                                                                                               - name: Display boot Grub kernal list                                                                                                                                                                                                         ignore_errors: yes                                                                                                                                                                                                                          shell: |                                                                                                                                                                                                                                      awk -F\' '/menuentry / {print $2}' /boot/grub2/grub.cfg                                                                                                                                                                                   register: grub_table_boot                                                                                                                                                                                                                                                                                                                                                                                                                                                             - debug:                                                                                                                                                                                                                                        msg: "{{ grub_table_boot }}"                                                                                                                                                                                                                                                                                                                                                                                                                                                        - set_fact:                                                                                                                                                                                                                                     grub_table: "{{ grub_table_boot.stdout_lines }}"                                                                                                                                                                                    
+    - name: Check grub_default in /etc/default/grub                                                                                                                                                                                               ignore_errors: yes
+      shell: |                                                                                                                                                                                                                                      cat /etc/default/grub | grep GRUB_DEFAULT | cut -d "=" -f 2
+      register: grub_def                                                                                                                                                                                                                                                                                                                                                                                                                                                                    - block:
+      - name: Check grubenv value                                                                                                                                                                                                                   ignore_errors: yes
+        shell: |
+          grub2-editenv list | cut -d "=" -f 2                                                                                                                                                                                                      register: grub_env
+                                                                                                                                                                                                                                                  - set_fact:
+          grub_default: "{{grub_env.stdout}}"                                                                                                                                                                                               
+      when: grub_def.stdout == "saved"                                                                                                                                                                                                      
+  when: not grub_loader.stat.exists and boot_grub_file.stat.exists

@@ -1,3 +1,60 @@
+- name: gather facts
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Gather facts
+      setup:
+
+- block:
+  # Make sure users exist on the system
+  - import_tasks: grub_kernel/grub-info.yml
+
+
+  - name: Display facts
+      set_fact:
+        output:
+          hostname: "{{ ansible_hostname }}"
+          distro: "{{ ansible_distribution }}"
+          version: "{{ ansible_distribution_version }}"
+          runkernel: "{{ ansible_kernel }}"
+          grublist: "{{ grub_table }}"
+          etcgrub: " {{ etc_grub_exists }}"
+          grubver: "{{ grub_version }}"
+          grubdef: "{{ grub_default }}"
+
+    - set_fact:
+        combined_output: "{{ ansible_play_hosts | map('extract', hostvars, 'output') | to_json }}"
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Output JSON file
+      copy:
+        dest: "~/scripts/brianb/output.json"
+        content: "{{ combined_output }}"
+      delegate_to: localhost
+      become: no
+      run_once: yes
+
+    - name: EMAIL BACKUPS
+      community.general.mail:
+        host: smtp.nrc.ca
+        port: 25
+        subject: Ansible-report
+        body: Hello, this is an e-mail. I hope you like it ;-)
+        from: ansiblenrc@ssc-spc.gc.ca (Brian Beckwith)
+        to:
+        - brian.beckwith@ssc-spc.gc.ca
+        attach:
+          - /home/SSC/cg/ansibledt/scripts/brianb/output.json
+        #headers: 'Reply-To=john@example.com|X-Special="Something or other"'
+        #        charset: utf8
+      delegate_to: localhost
+      become: no
+      run_once: True
+
+
 - block:
   # Make sure users exist on the system
   - import_tasks: users/beck.yml
